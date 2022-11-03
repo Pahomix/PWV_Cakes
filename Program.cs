@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,36 +10,36 @@ namespace PracticalWorkV
 {
     internal class Program
     {
-
+        public static string descritpion = " ";
         public static int page = 0;
         public static void Entering(ConsoleKeyInfo key, int positon, int page)
         {
             SubItem forms = new SubItem();
-            forms.items = new String[] { "Круг - 500", "Квадрат - 500", "Прямоугольник - 500", "Сердечко - 700" };
-            forms.cost = new int[] { 500, 500, 500, 700 };
+            forms.items = new[] { "Круг - 500", "Квадрат - 500", "Прямоугольник - 500", "Сердечко - 700" };
+            forms.cost = new[] { 500, 500, 500, 700 };
             SubItem sizes = new SubItem();
-            sizes.items = new String[]
+            sizes.items = new[]
             {
                 "Маленький (Диаметр - 16 см, 8 порций) - 1000", "Обычный (Диаметр - 18 см, 10 порций) - 1200",
                 "Большой (Диаметр - 28 см, 24 порций) - 2000"
             };
-            sizes.cost = new int[] { 1000, 1200, 2000 };
+            sizes.cost = new[] { 1000, 1200, 2000 };
             SubItem taste = new SubItem();
-            taste.items = new string[]
+            taste.items = new[]
                 { "Ванильный - 100", "Шоколадный - 100", "Кармаельный - 150", "Ягодный - 200", "Кокосовый - 250" };
-            taste.cost = new int[] { 100, 100, 150, 200, 250 }; 
+            taste.cost = new[] { 100, 100, 150, 200, 250 };
             SubItem amount = new SubItem();
-            amount.items = new string[] { "1 корж - 200", "2 коржа - 400", "3 коржа - 600", "4 коржа - 800" };
-            amount.cost = new int[] { 200, 400, 600, 800 };
+            amount.items = new[] { "1 корж - 200", "2 коржа - 400", "3 коржа - 600", "4 коржа - 800" };
+            amount.cost = new[] { 200, 400, 600, 800 };
             SubItem glaze = new SubItem();
-            glaze.items = new string[] { "Шоколад - 100", "Крем - 100", "Бизе - 150", "Драже - 150", "Ягоды - 200" };
-            glaze.cost = new int[] { 100, 100, 150, 150, 200 };
+            glaze.items = new[] { "Шоколад - 100", "Крем - 100", "Бизе - 150", "Драже - 150", "Ягоды - 200" };
+            glaze.cost = new[] { 100, 100, 150, 150, 200 };
             SubItem decor = new SubItem();
-            decor.items = new string[] { "Шоколадная - 150", "Ягодная - 150", "Кремовая - 150" };
-            decor.cost = new int[] { 150, 150, 150 };
-            if (page > 0)
+            decor.items = new[] { "Шоколадная - 150", "Ягодная - 150", "Кремовая - 150" };
+            decor.cost = new[] { 150, 150, 150 };
+            if (page == 1)
             {
-                for (; ;)
+                for (; ; )
                 {
                     Clear();
                     GreetingSub();
@@ -50,29 +52,6 @@ namespace PracticalWorkV
                                 Console.Write("   ");
                                 Console.WriteLine(item);
                             }
-
-                            //if (page == 2)
-                            //{
-                            //    key = Console.ReadKey(true);
-                            //    if (key.Key == ConsoleKey.Enter)
-                            //    {
-                            //        switch (positon)
-                            //        {
-                            //            case 3:
-                            //                Order.cost += forms.cost[0];
-                            //                break;
-                            //            case 4:
-                            //                Order.cost += forms.cost[1];
-                            //                break;
-                            //            case 5:
-                            //                Order.cost += forms.cost[2];
-                            //                break;
-                            //            case 6:
-                            //                Order.cost += forms.cost[3];
-                            //                break;
-                            //        }
-                            //    }
-                            //}
                             break;
                         case 4:
                             page = 3;
@@ -114,27 +93,80 @@ namespace PracticalWorkV
                                 Console.WriteLine(item);
                             }
                             break;
+                        case 9:
+                            Console.WriteLine("Спасибо за заказ! Если хотите заказать еще, нажмите Escape");
+                            string order = $"\n Заказ от {DateTime.Now}" +
+                                           $"\n\t Заказ: {descritpion}" +
+                                           $"\n\t Цена: {Order.cost}";
+                            File.AppendAllText("C:\\Users\\Даниил Селезнев\\Desktop\\Заказ.txt", order);
+                            key = Console.ReadKey(true);
+                            if (key.Key == ConsoleKey.Escape)
+                            {
+                                descritpion = " ";
+                                Order.cost = 0;
+                                page = 0;
+                                Clear();
+                                Greetings();
+                            }
+                            break;
                     }
                     key = Console.ReadKey(true);
                     Order.ChangePosition(key, page);
                 }
-
             }
 
-            if (page > 0 && page < 10)
+            if (page > 1)
             {
-                for (;;)
+                page--;
+                SubItem buf = default;
+                if (page == 2) buf = forms;
+
+                else if (page == 3) buf = sizes;
+
+                else if (page == 4) buf = taste;
+
+                else if (page == 5) buf = amount;
+
+                else if (page == 6) buf = glaze;
+
+                else if (page == 7) buf = decor;
+
+                key = Console.ReadKey(true);
+                switch (key.Key)
                 {
-                    key = Console.ReadKey(true);
-                    if (key.Key == ConsoleKey.Enter)
-                    {
-                        switch (positon)
+                    case ConsoleKey.UpArrow:
+                        Order.ChangePosition(key, page);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        Order.ChangePosition(key, page);
+                        break;
+                    case ConsoleKey.Enter:
+                        if (positon == 3)
                         {
-                            case 3:
-                                Order.cost += forms.cost[0];
-                                break;
+                            Order.cost += buf.cost[0];
+                            descritpion += buf.items[0] + ", ";
                         }
-                    }
+                        if (positon == 4)
+                        {
+                            Order.cost += buf.cost[1];
+                            descritpion += buf.items[1] + ", ";
+                        }
+                        if (positon == 5)
+                        {
+                            Order.cost += buf.cost[2];
+                            descritpion += buf.items[2] + ", ";
+                        }
+                        if (positon == 6)
+                        {
+                            Order.cost += buf.cost[3];
+                            descritpion += buf.items[3] + ", ";
+                        }
+                        if (positon == 7)
+                        {
+                            Order.cost += buf.cost[4];
+                            descritpion += buf.items[4] + ", ";
+                        }
+                        break;
                 }
             }
         }
@@ -169,6 +201,7 @@ namespace PracticalWorkV
             }
 
             Console.WriteLine($"Итоговая цена: {Order.cost}");
+            Console.WriteLine($"Заказ: {descritpion}");
         }
 
         static void Main(string[] args)
