@@ -47,6 +47,8 @@ namespace PracticalWorkV
                     {
                         case 3:
                             page = 2;
+                            Console.SetCursorPosition(0, positon = 3);
+                            Console.Write("->");
                             foreach (var item in forms.items)
                             {
                                 Console.Write("   ");
@@ -131,7 +133,6 @@ namespace PracticalWorkV
 
                 else if (page == 7) buf = decor;
 
-                key = Console.ReadKey(true);
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
@@ -143,6 +144,8 @@ namespace PracticalWorkV
                     case ConsoleKey.Enter:
                         if (positon == 3)
                         {
+                            page = 1;
+                            Clear();
                             Order.cost += buf.cost[0];
                             descritpion += buf.items[0] + ", ";
                         }
@@ -161,10 +164,18 @@ namespace PracticalWorkV
                             Order.cost += buf.cost[3];
                             descritpion += buf.items[3] + ", ";
                         }
+
                         if (positon == 7)
                         {
                             Order.cost += buf.cost[4];
                             descritpion += buf.items[4] + ", ";
+                        }
+
+                        switch (page)
+                        {
+                            case 1:
+                                Greetings();
+                                break;
                         }
                         break;
                 }
